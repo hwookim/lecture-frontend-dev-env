@@ -4,9 +4,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const mode = process.env.NODE_ENV || "development";
+const isProduction = mode === "production";
+
 module.exports = {
-  // TODO: 환경변수 NODE_ENV에 따라 development나 production 값을 설정하세요
-  mode: "development",
+  mode,
   entry: {
     main: "./src/app.js",
   },
@@ -27,7 +29,7 @@ module.exports = {
       {
         test: /\.(scss|css)$/,
         use: [
-          process.env.NODE_ENV === "production"
+          isProduction
             ? MiniCssExtractPlugin.loader // 프로덕션 환경
             : "style-loader", // 개발 환경
           "css-loader",
@@ -57,19 +59,18 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       templateParameters: {
-        env: process.env.NODE_ENV === "development" ? "(개발용)" : "",
+        env: !isProduction ? "(개발용)" : "",
       },
-      minify:
-        process.env.NODE_ENV === "production"
-          ? {
-              collapseWhitespace: true, // 빈칸 제거
-              removeComments: true, // 주석 제거
-            }
-          : false,
-      hash: process.env.NODE_ENV === "production",
+      minify: isProduction
+        ? {
+            collapseWhitespace: true, // 빈칸 제거
+            removeComments: true, // 주석 제거
+          }
+        : false,
+      hash: isProduction,
     }),
     new CleanWebpackPlugin(),
-    ...(process.env.NODE_ENV === "production"
+    ...(isProduction
       ? [new MiniCssExtractPlugin({ filename: `[name].css` })]
       : []),
   ],
