@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
 const isProduction = mode === "production";
@@ -76,17 +77,18 @@ module.exports = {
       : []),
   ],
   optimization: {
-    minimizer:
-      mode === "production"
-        ? [
-            new TerserPlugin({
-              terserOptions: {
-                compress: {
-                  drop_console: true, // 콘솔 로그를 제거한다
-                },
+    // 최적화
+    minimizer: isProduction
+      ? [
+          new OptimizeCSSAssetsPlugin(), // css파일 최대 압축
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                drop_console: true, // 콘솔 로그를 제거한다
               },
-            }),
-          ]
-        : [],
+            },
+          }),
+        ]
+      : [],
   },
 };
