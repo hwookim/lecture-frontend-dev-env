@@ -16,7 +16,9 @@ module.exports = {
   devServer: {
     overlay: true,
     stats: "errors-only",
-    before: (app) => {},
+    proxy: {
+      "/api": "http://localhost:8081",
+    },
   },
   module: {
     rules: [
