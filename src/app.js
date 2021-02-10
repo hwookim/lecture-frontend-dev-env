@@ -4,3 +4,5 @@ import "./app.scss";
 document.addEventListener("DOMContentLoaded", () => {
   new MainController();
 });
+
+console.log("this is console.log!");

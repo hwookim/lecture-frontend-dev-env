@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
 const isProduction = mode === "production";
@@ -74,5 +75,18 @@ module.exports = {
       ? [new MiniCssExtractPlugin({ filename: `[name].css` })]
       : []),
   ],
-  // TODO: 여기에 최적화 설정을 구성하세요
+  optimization: {
+    minimizer:
+      mode === "production"
+        ? [
+            new TerserPlugin({
+              terserOptions: {
+                compress: {
+                  drop_console: true, // 콘솔 로그를 제거한다
+                },
+              },
+            }),
+          ]
+        : [],
+  },
 };
